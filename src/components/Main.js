@@ -19,8 +19,8 @@ function Main() {
         <Router>
             <Header />
             <Switch>
-                <Route exact path="/finder" component={FinderForum}/>
-                <Route exact path="/seeker" component={SeekerForum}/>
+                <Route exact path="/finder/post" component={FinderForum}/>
+                <Route exact path="/seeker/post" component={SeekerForum}/>
                 <Route exact path="/home" component={Prompt} />
             </Switch>
         </Router>
@@ -48,11 +48,11 @@ function Prompt() {
     const history = useHistory();
 
     const onClickFinder = () => {
-        history.push("/finder")
+        history.push("/finder/post")
     }
 
     const onClickSeeker = () => {
-        history.push("/seeker")
+        history.push("/seeker/post")
     }
 
     document.body.style.backgroundColor = "#b3c1d1";

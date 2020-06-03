@@ -28,7 +28,7 @@ export default function FinderForum() {
             <div className="form">
                 <RequestForum config={config}/>
             </div>
-            <SearchEntry type="F"/>
+            <SearchEntry type={config.type}/>
         </div>
     )
 }

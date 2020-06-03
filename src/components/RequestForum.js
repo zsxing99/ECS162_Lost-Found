@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/RequestForum.css";
 
-import { Button, Form, Input, Select, Upload, message } from "antd";
+import { Button, Form, Input, Select, Upload, message, AutoComplete } from "antd";
 
 class RequestForum extends React.Component {
     constructor(props) {
@@ -16,7 +16,9 @@ class RequestForum extends React.Component {
         time: "",
         location: "",
 
-        pageOne: true
+        pageOne: false,
+
+        dataSource: []
     }
 
     onClickNext = values => {
@@ -28,6 +30,7 @@ class RequestForum extends React.Component {
     }
 
     onClickSubmit = values => {
+        values.time = Date.parse(values.time);
         console.log(values)
         console.log(this.state);
 
@@ -35,6 +38,15 @@ class RequestForum extends React.Component {
     }
 
     render() {
+        const { dataSource } = this.state;
+        const Option2 = AutoComplete.Option;
+        console.log(dataSource)
+        const options = dataSource.map((place) => (
+            <Option2 key={place.id} value={place.name} className="autocomplete">
+                <span>{place.name}</span>
+            </Option2>
+        ))
+
         const fileUploadMethod = {
             name: 'photo',
             // TODO: link to upload photo
@@ -54,8 +66,35 @@ class RequestForum extends React.Component {
             showUploadList: false
         }
 
-        const {Option} = Select;
+        const { Option } = Select;
         const { TextArea } = Input;
+
+        // Google Map auto Complete
+
+        const onSearch = text => {
+            if (!text) {
+                this.setState({
+                    dataSource: []
+                });
+                return;
+            }
+
+            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            const url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
+                "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
+                "38.537,-121.754&radius=10000";
+
+            fetch(proxyUrl + url)
+                .then(res => res.json())
+                .then((data) => {
+                    this.setState({
+                        dataSource: data.predictions.map(place => ({
+                            name: place.description,
+                            id: place.id,
+                        }))
+                    })
+                })
+        };
 
         return this.state.pageOne ?
             (
@@ -155,7 +194,7 @@ class RequestForum extends React.Component {
                         }]
                         }
                     >
-                        <Input style={{ width: '60%' }} type="datetime-local" />
+                        <Input type="datetime-local" />
                     </Form.Item>
 
                     <Form.Item
@@ -165,7 +204,7 @@ class RequestForum extends React.Component {
                             required: true,
                             validator: (_, value) => {
                                 if (!value) {
-                                    message.error("Please enter date and time");
+                                    message.error("Please enter location");
                                     return Promise.reject("!");
                                 }
                                 return Promise.resolve();
@@ -174,11 +213,16 @@ class RequestForum extends React.Component {
                         }]
                         }
                     >
-                        <Form.Item>
-                            <Button type="primary" shape="round" htmlType="submit" id="submit-btn" style={{...this.props.config.submit_btn}}>
-                                submit
-                            </Button>
-                        </Form.Item>
+                        <AutoComplete
+                            dataSource={options}
+                            onSearch={onSearch}
+                        />
+                    </Form.Item>
+
+                    <Form.Item>
+                        <Button type="primary" shape="round" htmlType="submit" id="submit-btn" style={{...this.props.config.submit_btn}}>
+                            submit
+                        </Button>
                     </Form.Item>
                 </Form>
             )

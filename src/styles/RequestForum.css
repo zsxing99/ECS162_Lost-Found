@@ -33,9 +33,19 @@
     color: #142a50 !important;
 }
 
+.ant-select-selection-search {
+    color: #142a50 !important;
+    font-weight: 500 !important;
+}
+
 .ant-form-item {
     margin-bottom: 8px;
     flex: 0 0 100% !important;
+}
+
+.autocomplete {
+    color: #142a50 !important;
+    font-weight: 500 !important;
 }
 
 #photo-btn {

@@ -27,7 +27,7 @@ export default function SeekerForum() {
             <div className="form">
                 <RequestForum config={config}/>
             </div>
-            <SearchEntry type="S"/>
+            <SearchEntry type={config.type}/>
         </div>
     )
 }

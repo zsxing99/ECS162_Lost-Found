@@ -47,9 +47,9 @@ class App extends React.Component {
                         </div>
                     </div>
                 </Route>
-                <Route path="/home">
-                    <Main />
-                </Route>
+                <Route exact path="/finder/post" component={Main}/>
+                <Route exact path="/seeker/post" component={Main}/>
+                <Route exact path="/home" component={Main} />
             </Switch>
         </Router>
       )

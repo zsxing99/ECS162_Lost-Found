@@ -9,15 +9,11 @@ export default function SearchEntry(props) {
     const history = useHistory();
 
     const onClick = () => {
-
-        // TODO: add router
         if (props.type === 'F') {
-            history.push();
+            history.push("/finder/search");
         } else {
-
+            history.push("/seeker/search");
         }
-
-        console.log("hello")
     }
 
     return (
