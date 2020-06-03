@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import FinderForum from "./FinderForum";
 import SeekerForum from "./SeekerForum";
+import SearchForum from "./SearchForum";
 
 function Main() {
 
@@ -20,7 +21,12 @@ function Main() {
             <Header />
             <Switch>
                 <Route exact path="/finder/post" component={FinderForum}/>
-                <Route exact path="/seeker/post" component={SeekerForum}/>
+                <Route exact path="/finder/search">
+                    <SearchForum type="F" />
+                </Route>
+                <Route exact path="/seeker/post">
+                    <SearchForum type="S" />
+                </Route>
                 <Route exact path="/home" component={Prompt} />
             </Switch>
         </Router>

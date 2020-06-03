@@ -79,6 +79,11 @@
     display: none;
 }
 
+#pageOne_category {
+    color: #142a50;
+    font-weight: 500;
+}
+
 #pageTwo_location {
     font-weight: 500;
 }

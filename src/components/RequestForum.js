@@ -9,18 +9,20 @@ class RequestForum extends React.Component {
         super(props);
     }
 
+    formRef = React.createRef();
+
     state = {
         title: "",
         category: "",
-        Description: "",
+        description: "",
         photo: "",
         time: "",
         location: "",
 
-        pageOne: false,
+        pageOne: true,
 
         dataSource: [],
-        selectedPlace: null
+        selectedPlace: null,
     }
 
     onClickNext = values => {
@@ -32,17 +34,32 @@ class RequestForum extends React.Component {
     }
 
     onClickSubmit = values => {
-        values.time = Date.parse(values.time);
+        values.time = values.time.replace("T", " ");
         console.log(values)
         console.log(this.state);
+
+        const data = {
+            title: this.state.title,
+            category: this.state.category,
+            description: this.state.description,
+            photo: this.state.photo,
+            time: values.time,
+            ...this.state.selectedPlace,
+        }
+
+        console.log()
+
+        // TODO: send payload
 
         // TODO: re-router
     }
 
     render() {
+        // use proxy in dev
+        const useProxy = true;
+
         const { dataSource } = this.state;
         const Option2 = AutoComplete.Option;
-        console.log(dataSource)
         const options = dataSource.map((place) => (
             <Option2 key={place.id} value={place.name} className="autocomplete">
                 <span>{place.name}</span>
@@ -86,7 +103,7 @@ class RequestForum extends React.Component {
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
                 "38.537,-121.754&radius=10000&strictbounds=true";
 
-            fetch(proxyUrl + url)
+            fetch(useProxy ? proxyUrl + url : url)
                 .then(res => res.json())
                 .then((data) => {
                     this.setState({
@@ -99,18 +116,39 @@ class RequestForum extends React.Component {
         };
 
         const onSelect = (data, object) => {
-            console.log(object.key)
-
             const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const url = "https://maps.googleapis.com/maps/api/place/details/json?" +
                 "key=AIzaSyCTbLgQzno0rc_eE40MoFuo6FLdiV6MOhA&place_id=" + encodeURI(object.key) + "&fields=geometry";
-            fetch(proxyUrl + url)
+            fetch(useProxy ? proxyUrl + url : url)
                 .then(res => res.json())
                 .then((data) => {
                     this.setState({
                         selectedPlace: {
                             ...data.result.geometry.location
                         }
+                    })
+                })
+        }
+
+        const setPlace = (place) => {
+            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50"
+
+            fetch(useProxy ? proxyUrl + url : url)
+                .then(res => res.json())
+                .then((data) => {
+                    if (!data.results || data.results.length === 0 || !data.results[0].name || !data.results[0].geometry) {
+                        message.warning("No nearby place matched")
+                        return;
+                    }
+                    this.setState({
+                        selectedPlace: {
+                            ...data.results[0].geometry.location
+                        }
+                    })
+                    this.formRef.current.setFieldsValue({
+                        location: data.results[0].name
                     })
                 })
         }
@@ -192,6 +230,7 @@ class RequestForum extends React.Component {
                 </Form>
             ) : (
                 <Form
+                    ref={this.formRef}
                     name="pageTwo"
                     onFinish={this.onClickSubmit}
                     className="page-two"
@@ -253,6 +292,7 @@ class RequestForum extends React.Component {
                                 height: '25vh'
                             }}
                                    place={this.state.selectedPlace}
+                                   setMarker={setPlace}
                         />
                     </Form.Item>
 

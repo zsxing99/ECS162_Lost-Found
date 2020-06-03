@@ -8,13 +8,24 @@ class MapContainer extends React.Component {
     }
 
     displayMarkers = () => {
-        if (this.props.place === null) {
+        if (!this.props.place) {
             return null;
         }
         return <Marker position={{
             lat: this.props.place.lat,
             lng: this.props.place.lng
         }}/>
+    }
+
+    onClick = (t, mpa, coordinates) => {
+        const { latLng } = coordinates;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+
+        this.props.setMarker({
+            lat: lat,
+            lng: lng
+        })
     }
 
     render() {
@@ -24,6 +35,7 @@ class MapContainer extends React.Component {
                 zoom={15}
                 style={this.props.style}
                 initialCenter={{ lat: 38.537, lng: -121.754}}
+                onClick={this.onClick}
             >
                 {this.displayMarkers()}
             </Map>

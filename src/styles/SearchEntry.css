@@ -9,6 +9,10 @@ h2 {
     padding: 5px;
 }
 
+.search-block:hover {
+    cursor: pointer;
+}
+
 .search-block img {
     display: block;
     float: right;

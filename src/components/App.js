@@ -42,7 +42,9 @@ function App() {
                     </div>
                 </Route>
                 <Route exact path="/finder/post" component={Main}/>
+                <Route exact path="/finder/search" component={Main}/>
                 <Route exact path="/seeker/post" component={Main}/>
+                <Route exact path="/seeker/search" component={Main}/>
                 <Route exact path="/home" component={Main} />
             </Switch>
         </Router>
