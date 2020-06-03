@@ -2,6 +2,7 @@ import React from "react";
 import "../styles/RequestForum.css";
 
 import { Button, Form, Input, Select, Upload, message, AutoComplete } from "antd";
+import GoogleMap from "./GoogleMap";
 
 class RequestForum extends React.Component {
     constructor(props) {
@@ -18,7 +19,8 @@ class RequestForum extends React.Component {
 
         pageOne: false,
 
-        dataSource: []
+        dataSource: [],
+        selectedPlace: null
     }
 
     onClickNext = values => {
@@ -82,7 +84,7 @@ class RequestForum extends React.Component {
             const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
-                "38.537,-121.754&radius=10000";
+                "38.537,-121.754&radius=10000&strictbounds=true";
 
             fetch(proxyUrl + url)
                 .then(res => res.json())
@@ -90,11 +92,28 @@ class RequestForum extends React.Component {
                     this.setState({
                         dataSource: data.predictions.map(place => ({
                             name: place.description,
-                            id: place.id,
+                            id: place.place_id,
                         }))
                     })
                 })
         };
+
+        const onSelect = (data, object) => {
+            console.log(object.key)
+
+            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            const url = "https://maps.googleapis.com/maps/api/place/details/json?" +
+                "key=AIzaSyCTbLgQzno0rc_eE40MoFuo6FLdiV6MOhA&place_id=" + encodeURI(object.key) + "&fields=geometry";
+            fetch(proxyUrl + url)
+                .then(res => res.json())
+                .then((data) => {
+                    this.setState({
+                        selectedPlace: {
+                            ...data.result.geometry.location
+                        }
+                    })
+                })
+        }
 
         return this.state.pageOne ?
             (
@@ -206,16 +225,34 @@ class RequestForum extends React.Component {
                                 if (!value) {
                                     message.error("Please enter location");
                                     return Promise.reject("!");
+                                } else if (!this.state.selectedPlace) {
+                                    message.error("Please select a location");
+                                    return Promise.reject("!");
                                 }
                                 return Promise.resolve();
-                            }
-
+                            },
                         }]
                         }
+                        validateTrigger={["onSubmit"]}
                     >
                         <AutoComplete
                             dataSource={options}
                             onSearch={onSearch}
+                            onSelect={onSelect}
+                            style={{
+                                fontWeight: "500"
+                            }}
+                        />
+                    </Form.Item>
+
+                    <Form.Item style={{
+                        height: '30vh'
+                    }}>
+                        <GoogleMap style={{
+                                width: '100%',
+                                height: '25vh'
+                            }}
+                                   place={this.state.selectedPlace}
                         />
                     </Form.Item>
 

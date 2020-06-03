@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/App.css';
 import Main from "./Main";
 import { Button } from "antd";
@@ -10,29 +10,23 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect
+    Redirect,
+    useHistory
 } from "react-router-dom";
 
-class App extends React.Component {
-  state = {
-    loggedIn: false
-  }
+function App() {
+    const [loggedIn, setLogin] = useState(false);
+    const history = useHistory();
+    const onClick = () => {
+        // history.push("/auth/google")
 
-  onClick = () => {
-    // TODO: google Oauth
-    console.log("hello")
-
-    // for test purpose set loggedIn true
-    this.setState({
-      loggedIn: true
-    })
-  }
-
-  render() {
-      return (
+        // for test purpose set loggedIn true
+        setLogin(true)
+    }
+    return (
         <Router>
             {
-                this.state.loggedIn ? <Redirect to="/home" /> : null
+                loggedIn ? <Redirect to="/home" /> : null
             }
             <Switch>
                 <Route exact path="/">
@@ -40,7 +34,7 @@ class App extends React.Component {
                         <img id="welcome-img" src={cover} alt=""/>
                         <div className="login-page">
                             <img id="logo-img" src={logo} alt=""/>
-                            <Button shape="round" onClick={this.onClick}>
+                            <Button shape="round" onClick={onClick}>
                                 <img id="login-img" src={google} alt=""/>
                                 Login with Google
                             </Button>
@@ -52,8 +46,7 @@ class App extends React.Component {
                 <Route exact path="/home" component={Main} />
             </Switch>
         </Router>
-      )
-  }
+    )
 }
 
 export default App;

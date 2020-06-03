@@ -78,3 +78,7 @@
 .ant-form-item-explain {
     display: none;
 }
+
+#pageTwo_location {
+    font-weight: 500;
+}
