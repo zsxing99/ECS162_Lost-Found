@@ -7,37 +7,40 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
-    Redirect,
-    useHistory,
-    withRouter
+    useHistory
 } from "react-router-dom";
 import FinderForum from "./FinderForum";
 import SeekerForum from "./SeekerForum";
 
 function Main() {
+
+
+    return (
+        <Router>
+            <Header />
+            <Switch>
+                <Route exact path="/finder" component={FinderForum}/>
+                <Route exact path="/seeker" component={SeekerForum}/>
+                <Route exact path="/home" component={Prompt} />
+            </Switch>
+        </Router>
+    )
+}
+
+
+function Header() {
     const history = useHistory();
 
     const onClickHomePage = () => {
         history.push("/home");
-        console.log("hello")
     }
 
     return (
-        <div>
-            <header>
-                <div>
-                    <img src={logo} alt="" onClick={onClickHomePage}/>
-                </div>
-            </header>
-            <Router>
-                <Switch>
-                    <Route exact path="/finder" component={FinderForum}/>
-                    <Route exact path="/seeker" component={SeekerForum}/>
-                    <Route path="/home" component={Prompt} />
-                </Switch>
-            </Router>
-        </div>
+        <header>
+            <div>
+                <img src={logo} alt="" onClick={onClickHomePage}/>
+            </div>
+        </header>
     )
 }
 
