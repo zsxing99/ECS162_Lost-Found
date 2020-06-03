@@ -1,0 +1,70 @@
+.page-one {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    color: #142a50 !important;
+
+    justify-content: space-around;
+}
+
+.page-two {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    color: #142a50 !important;
+
+    justify-content: space-around;
+}
+
+.ant-form-item-label > label {
+    color: #142a50;
+}
+
+.ant-input {
+    background: #e5e5e5;
+    color: #142a50;
+    font-weight: 500;
+}
+
+.ant-form-item-label {
+    padding: 0 !important;
+}
+
+.ant-select-selector {
+    background: #e5e5e5 !important;
+    color: #142a50 !important;
+}
+
+.ant-form-item {
+    margin-bottom: 8px;
+    flex: 0 0 100% !important;
+}
+
+#photo-btn {
+    background: #e5e5e5;
+    color: #142a50;
+    margin-right: auto;
+    font-weight: 500;
+}
+
+#next-btn {
+    color: white;
+    float: right;
+}
+
+#submit-btn {
+    color: white;
+    float: right;
+}
+
+
+.ant-form .ant-form-item .ant-form-item-label, .ant-form .ant-form-item .ant-form-item-control {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 100%;
+    max-width: 100%;
+}
+
+.ant-form-item-explain {
+    display: none;
+}

@@ -12,16 +12,19 @@ import {
     useHistory,
     withRouter
 } from "react-router-dom";
+import FinderForum from "./FinderForum";
+import SeekerForum from "./SeekerForum";
 
 function Main() {
     const history = useHistory();
 
     const onClickHomePage = () => {
-        history.push("/");
+        history.push("/home");
+        console.log("hello")
     }
 
     return (
-        <div className="Main">
+        <div>
             <header>
                 <div>
                     <img src={logo} alt="" onClick={onClickHomePage}/>
@@ -29,9 +32,9 @@ function Main() {
             </header>
             <Router>
                 <Switch>
-                    <Route exact path="/" component={Prompt} />
-                    <Route exact path="/finder" />
-                    <Route exact path="/seeker" />
+                    <Route exact path="/finder" component={FinderForum}/>
+                    <Route exact path="/seeker" component={SeekerForum}/>
+                    <Route path="/home" component={Prompt} />
                 </Switch>
             </Router>
         </div>
@@ -48,6 +51,8 @@ function Prompt() {
     const onClickSeeker = () => {
         history.push("/seeker")
     }
+
+    document.body.style.backgroundColor = "#b3c1d1";
 
     return (
         <div className="prompt">

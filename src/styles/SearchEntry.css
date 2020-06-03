@@ -1,0 +1,19 @@
+h2 {
+    margin-top: 10px;
+}
+
+.search-block {
+    background: white;
+    height: 5vh;
+    width: 80vw;
+    padding: 5px;
+}
+
+.search-block img {
+    display: block;
+    float: right;
+    max-width: 4vh;
+    max-height:100%;
+    width: auto;
+    height: auto;
+}

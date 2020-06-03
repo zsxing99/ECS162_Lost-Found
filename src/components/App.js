@@ -8,7 +8,9 @@ import google from "../assets/google.jpg";
 import logo from "../assets/Logo.png";
 import {
     BrowserRouter as Router,
-    Route
+    Switch,
+    Route,
+    Redirect
 } from "react-router-dom";
 
 class App extends React.Component {
@@ -27,30 +29,29 @@ class App extends React.Component {
   }
 
   render() {
-    return (
+      return (
         <Router>
-          <div className="App">
-            {this.state.loggedIn ?
-                (
-                    <Main/>
-                ):
-                (
+            {
+                this.state.loggedIn ? <Redirect to="/home" /> : null
+            }
+            <Switch>
+                <Route exact path="/">
                     <div className="welcome-page">
                         <img id="welcome-img" src={cover} alt=""/>
                         <div className="login-page">
-                          <img id="logo-img" src={logo} alt=""/>
-                          <Button shape="round" onClick={this.onClick}>
-                            <img id="login-img" src={google} alt=""/>
-                            Login with Google
-                          </Button>
+                            <img id="logo-img" src={logo} alt=""/>
+                            <Button shape="round" onClick={this.onClick}>
+                                <img id="login-img" src={google} alt=""/>
+                                Login with Google
+                            </Button>
                         </div>
                     </div>
-                )
-            }
-          </div>
-
+                </Route>
+                <Route path="/home" component={Main}>
+                </Route>
+            </Switch>
         </Router>
-    )
+      )
   }
 }
 
