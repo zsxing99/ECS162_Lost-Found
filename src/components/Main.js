@@ -24,7 +24,8 @@ function Main() {
                 <Route exact path="/finder/search">
                     <SearchForum type="F" />
                 </Route>
-                <Route exact path="/seeker/post">
+                <Route exact path="/seeker/post" component={SeekerForum}/>
+                <Route exact path="/seeker/search">
                     <SearchForum type="S" />
                 </Route>
                 <Route exact path="/home" component={Prompt} />

@@ -39,11 +39,13 @@ class RequestForum extends React.Component {
         console.log(this.state);
 
         const data = {
+            type: this.props.config.type,
             title: this.state.title,
             category: this.state.category,
             description: this.state.description,
-            photo: this.state.photo,
+            photoURL: this.state.photo,
             time: values.time,
+            location: this.state.location,
             ...this.state.selectedPlace,
         }
 

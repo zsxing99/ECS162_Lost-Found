@@ -1,21 +1,39 @@
 import React, { useState } from "react";
-
-import search from "../assets/search-solid.svg"
+import "../styles/SearchForum.css";
+import search from "../assets/search-solid.svg";
 
 import { AutoComplete, Button, Form, Input, message, Select } from "antd";
 import GoogleMap from "./GoogleMap";
 
 export default function SearchForum(props) {
+    let btn_color_config;
     if (props.type === "F") {
         document.body.style.backgroundColor = "#feebb1";
+        btn_color_config = {
+            background: "#daab27",
+            borderColor: "#daab27"
+        }
     } else {
         document.body.style.backgroundColor = "#b3c1d1";
+        btn_color_config = {
+            background: "#142a50",
+            borderColor: "#142a50"
+        }
     }
 
     const [ dataSource, setDataSource ] = useState([]);
     const [ selectedPlace, setSelectedPlace ] = useState();
+
+    // input text area
+    // 1 - search bar; 2 - time start; 3 - time end
+    const [ input1, setInput1 ] = useState("");
+
+    const onChange1 = text => {
+        setInput1(text.target.value);
+    }
+
     const { Option } = Select;
-    const { form } = Form;
+    const [ form ] = Form.useForm();
 
     // use proxy in dev
     const useProxy = true;
@@ -62,13 +80,13 @@ export default function SearchForum(props) {
                         ...data.result.geometry.location
                     }
                 )
-    }       )
+            })
     }
 
     const setPlace = (place) => {
         const proxyUrl = "https://cors-anywhere.herokuapp.com/";
         const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
-            "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50"
+            "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50";
 
         fetch(useProxy ? proxyUrl + url : url)
             .then(res => res.json())
@@ -83,41 +101,69 @@ export default function SearchForum(props) {
                     }
                 )
                 form.setFieldsValue({
-
+                    location: data.results[0].name
                 })
             })
     }
+
+    const onSubmit = (values) => {
+        console.log(values)
+        if (!input1 && !values.time.t1 && !values.time.t2 && !values.category && !values.location) {
+            message.error("Please enter at least one field (Category-All doesn't count)");
+            return;
+        }
+
+        const data = {
+            type: props.type === "F" ? "S" : "F",
+            start_time: values.time.t1,
+            end_time: values.time.t2,
+            query_text: input1,
+            category: values.category,
+            location: values.location,
+            ...selectedPlace
+        }
+
+        // TODO: redirect
+    };
 
     return (
         <div className="search-form">
             <h2>
                 Search for existing requests
             </h2>
-            <div>
-                <Input suffix={<img src={search} alt=""/>}/>
+            <div className="search-bar">
+                <Input suffix={<img src={search} alt=""/>} onChange={onChange1}/>
             </div>
             <Form
                 name="search"
                 labelAlign="left"
-                className="search"
-                ref={form}
+                className="form"
+                form={form}
+                onFinish={onSubmit}
             >
                 <Form.Item
+                    label="Date & Time"
+                    name="time"
+                    rules={[{
+                        validator: (_, value) => {
+                            if (value && value.t1 && value.t2 && Date.parse(value.t1) > Date.parse(value.t2)) {
+                                message.error("End time must not be ahead of start time")
+                                return Promise.reject("!")
+                            } else {
+                                return Promise.resolve();
+                            }
+                        }
+                    }]}
+                    style={{
+                        color: "#142a50"
+                    }}
                 >
-
+                    <TimeInterval />
                 </Form.Item>
 
-                <Form.Item label="Category" name="category" rules={[{
-                    required: true,
-                    validator: (_, value) => {
-                        if (!value) {
-                            message.error("Please select category");
-                            return Promise.reject("!");
-                        }
-                        return Promise.resolve();
-                    }
-                }]}>
+                <Form.Item label="Category" name="category">
                     <Select id="category">
+                        <Option value={undefined}>All</Option>
                         <Option value="Electronics">Electronics</Option>
                         <Option value="Collectibles & Art">Collectibles & Art</Option>
                         <Option value="Health & Beauty">Health & Beauty</Option>
@@ -127,24 +173,9 @@ export default function SearchForum(props) {
                         <Option value="Others">Others</Option>
                     </Select>
                 </Form.Item>
-
                 <Form.Item
                     label="Location"
                     name="location"
-                    rules={[{
-                        required: true,
-                        validator: (_, value) => {
-                            if (!value) {
-                                message.error("Please enter location");
-                                return Promise.reject("!");
-                            } else if (!selectedPlace) {
-                                message.error("Please select a location");
-                                return Promise.reject("!");
-                            }
-                            return Promise.resolve();
-                        },
-                    }]
-                    }
                     validateTrigger={["onSubmit"]}
                 >
                     <AutoComplete
@@ -168,7 +199,48 @@ export default function SearchForum(props) {
                                setMarker={setPlace}
                     />
                 </Form.Item>
+
+                <Form.Item >
+                    <Button type="primary" shape="round" htmlType="submit" id="submit-btn" style={btn_color_config}>
+                        search
+                    </Button>
+                </Form.Item>
             </Form>
         </div>
     )
+}
+
+const TimeInterval = ({value = {}, onChange}) => {
+    const [t1, setTime1] = useState('');
+    const [t2, setTime2] = useState('');
+
+    const triggerChange = changedValue => {
+        if (onChange) {
+            onChange({ t1, t2, ...value, ...changedValue });
+        }
+    };
+
+    const onT1Change = t => {
+        t = t.target.value;
+        if (!('t1' in value)) {
+            setTime1(t);
+        }
+        triggerChange({ t1: t});
+    }
+
+    const onT2Change = t => {
+        t = t.target.value;
+        if (!('t2' in value)) {
+            setTime2(t);
+        }
+        triggerChange({ t2: t});
+    }
+
+    return (
+        <span>
+            <Input type="datetime-local" value={value.t1 || t1} style={{width : "45%"}} onChange={onT1Change}/>
+            &nbsp;to&nbsp;
+            <Input type="datetime-local" value={value.t2 || t2} style={{width : "45%"}} onChange={onT2Change}/>
+        </span>
+    );
 }

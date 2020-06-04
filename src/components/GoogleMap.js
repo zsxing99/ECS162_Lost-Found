@@ -35,6 +35,7 @@ class MapContainer extends React.Component {
                 zoom={15}
                 style={this.props.style}
                 initialCenter={{ lat: 38.537, lng: -121.754}}
+                center={this.props.place ? {...this.props.place} : {lat: 38.537, lng: -121.754}}
                 onClick={this.onClick}
             >
                 {this.displayMarkers()}
