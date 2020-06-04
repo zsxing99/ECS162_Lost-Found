@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/RequestForum.css";
-
+import { useProxy, proxyUrl, photoStorageLink } from "../config"
 import { Button, Form, Input, Select, Upload, message, AutoComplete } from "antd";
 import GoogleMap from "./GoogleMap";
 
@@ -26,7 +26,6 @@ class RequestForum extends React.Component {
     }
 
     onClickNext = values => {
-        console.log(values);
         this.setState({
             ...values,
             pageOne: false
@@ -43,7 +42,7 @@ class RequestForum extends React.Component {
             title: this.state.title,
             category: this.state.category,
             description: this.state.description,
-            photoURL: this.state.photo,
+            photoURL: this.state.photo ? photoStorageLink + this.state.photo : '',
             time: values.time,
             location: this.state.location,
             ...this.state.selectedPlace,
@@ -51,14 +50,27 @@ class RequestForum extends React.Component {
 
         console.log()
 
-        // TODO: send payload
+        fetch(useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/post' : 'https://lost-found-162.glitch.me/post',
+            {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(
+                res => {
+                    if (res.status === 200) {
+                        message.success("Page posted successfully")
+                    } else {
+                        message.error("Page posted failed");
+                    }
+                }
+            )
 
         // TODO: re-router
     }
 
     render() {
         // use proxy in dev
-        const useProxy = true;
 
         const { dataSource } = this.state;
         const Option2 = AutoComplete.Option;
@@ -70,21 +82,30 @@ class RequestForum extends React.Component {
 
         const fileUploadMethod = {
             name: 'photo',
-            // TODO: link to upload photo
-            action: '',
+            action: useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/upload' : 'https://lost-found-162.glitch.me/upload',
             accept: 'image/*',
             onChange(info) {
-                if (info.file.status !== 'uploading') {
-                    console.log(info.file, info.fileList);
-                }
                 if (info.file.status === 'done') {
                     message.success(`${info.file.name} file uploaded successfully`);
                 } else if (info.file.status === 'error') {
-                    message.error(`${info.file.name} file upload failed.`);
+                    message.error(`${info.file.name} file upload failed`);
                 }
             },
             multiple: false,
-            showUploadList: false
+            showUploadList: false,
+            customRequest: async ({ action, file, onSuccess, onError }) => {
+                const formData = new FormData();
+                formData.append('newImage', file, file.name);
+                fetch(action, {
+                    method: 'POST',
+                    body: formData
+                }).then(res => {
+                    this.setState({
+                        photo: file.name
+                    })
+                    onSuccess(res.data);
+                }, onError);
+            }
         }
 
         const { Option } = Select;
@@ -100,7 +121,6 @@ class RequestForum extends React.Component {
                 return;
             }
 
-            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
                 "38.537,-121.754&radius=10000&strictbounds=true";
@@ -118,7 +138,6 @@ class RequestForum extends React.Component {
         };
 
         const onSelect = (data, object) => {
-            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const url = "https://maps.googleapis.com/maps/api/place/details/json?" +
                 "key=AIzaSyCTbLgQzno0rc_eE40MoFuo6FLdiV6MOhA&place_id=" + encodeURI(object.key) + "&fields=geometry";
             fetch(useProxy ? proxyUrl + url : url)
@@ -133,7 +152,6 @@ class RequestForum extends React.Component {
         }
 
         const setPlace = (place) => {
-            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
             const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50"
 

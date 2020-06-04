@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useProxy, proxyUrl } from "../config";
 import "../styles/SearchForum.css";
 import search from "../assets/search-solid.svg";
 
@@ -35,9 +36,6 @@ export default function SearchForum(props) {
     const { Option } = Select;
     const [ form ] = Form.useForm();
 
-    // use proxy in dev
-    const useProxy = true;
-
     const Option2 = AutoComplete.Option;
     const options = dataSource.map((place) => (
         <Option2 key={place.id} value={place.name} className="autocomplete">
@@ -51,7 +49,6 @@ export default function SearchForum(props) {
             return;
         }
 
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
         const url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?" +
             "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
             "38.537,-121.754&radius=10000&strictbounds=true";
@@ -69,7 +66,6 @@ export default function SearchForum(props) {
     };
 
     const onSelect = (data, object) => {
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
         const url = "https://maps.googleapis.com/maps/api/place/details/json?" +
             "key=AIzaSyCTbLgQzno0rc_eE40MoFuo6FLdiV6MOhA&place_id=" + encodeURI(object.key) + "&fields=geometry";
         fetch(useProxy ? proxyUrl + url : url)
@@ -84,7 +80,6 @@ export default function SearchForum(props) {
     }
 
     const setPlace = (place) => {
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
         const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
             "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50";
 
@@ -107,22 +102,36 @@ export default function SearchForum(props) {
     }
 
     const onSubmit = (values) => {
-        console.log(values)
-        if (!input1 && !values.time.t1 && !values.time.t2 && !values.category && !values.location) {
+        if (!input1 && (!values.time || (!values.time.t1 && !values.time.t2)) && !values.category && !values.location) {
             message.error("Please enter at least one field (Category-All doesn't count)");
             return;
         }
-
         const data = {
             type: props.type === "F" ? "S" : "F",
-            start_time: values.time.t1,
-            end_time: values.time.t2,
+            start_time: values.time && values.time.t1 ? values.time.t1.replace("T", " ") : '',
+            end_time: values.time && values.time.t2 ? values.time.t2.replace("T", " ") : '',
             query_text: input1,
-            category: values.category,
-            location: values.location,
+            category: values.category ? values.category : '',
+            location: values.location ? values.location : '',
             ...selectedPlace
         }
 
+        fetch(useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/search' : 'https://lost-found-162.glitch.me/search',
+            {
+                method: 'GET',
+                payload: JSON.stringify(data),
+                // headers: { "Content-Type": "application/json" }
+            })
+            .then(
+                res => {
+                    console.log(data)
+                    if (res.status === 200) {
+                        message.success("Page posted successfully")
+                    } else {
+                        message.error("Page posted failed");
+                    }
+                }
+            )
         // TODO: redirect
     };
 
