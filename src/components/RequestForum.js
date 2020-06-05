@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/RequestForum.css";
-import { useProxy, proxyUrl, photoStorageLink } from "../config"
+import { useProxy, proxyUrl, photoStorageLink, prefix, uploadService, postService } from "../config"
 import { Button, Form, Input, Select, Upload, message, AutoComplete } from "antd";
 import GoogleMap from "./GoogleMap";
 
@@ -50,7 +50,7 @@ class RequestForum extends React.Component {
 
         console.log()
 
-        fetch(useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/post' : 'https://lost-found-162.glitch.me/post',
+        fetch(useProxy ? proxyUrl + prefix + postService : prefix + postService,
             {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -59,14 +59,18 @@ class RequestForum extends React.Component {
             .then(
                 res => {
                     if (res.status === 200) {
-                        message.success("Page posted successfully")
+                        message.success("Page sent successfully, thank you!");
+                        this.props.config.history.push("/home");
                     } else {
-                        message.error("Page posted failed");
+                        message.error("Page sent failed");
+                        message.warning("Please try again");
+                        this.setState({
+                            pageOne: true
+                        })
                     }
                 }
             )
 
-        // TODO: re-router
     }
 
     render() {
@@ -82,7 +86,7 @@ class RequestForum extends React.Component {
 
         const fileUploadMethod = {
             name: 'photo',
-            action: useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/upload' : 'https://lost-found-162.glitch.me/upload',
+            action: useProxy ? proxyUrl + prefix + uploadService : prefix + uploadService,
             accept: 'image/*',
             onChange(info) {
                 if (info.file.status === 'done') {

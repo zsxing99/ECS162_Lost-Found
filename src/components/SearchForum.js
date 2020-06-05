@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useProxy, proxyUrl } from "../config";
+import { useProxy, proxyUrl, prefix, searchService } from "../config";
 import "../styles/SearchForum.css";
-import search from "../assets/search-solid.svg";
-
+import search from "../assets/images/search-solid.svg";
+import { Redirect } from "react-router-dom";
 import { AutoComplete, Button, Form, Input, message, Select } from "antd";
 import GoogleMap from "./GoogleMap";
 
@@ -24,6 +24,8 @@ export default function SearchForum(props) {
 
     const [ dataSource, setDataSource ] = useState([]);
     const [ selectedPlace, setSelectedPlace ] = useState();
+    const [ searchSuccess, setSearchStatus ] = useState(false);
+    const [ response, setResponse] = useState({});
 
     // input text area
     // 1 - search bar; 2 - time start; 3 - time end
@@ -116,32 +118,61 @@ export default function SearchForum(props) {
             ...selectedPlace
         }
 
-        fetch(useProxy ? proxyUrl + 'https://lost-found-162.glitch.me/search' : 'https://lost-found-162.glitch.me/search',
+        let serviceUrl = useProxy ? proxyUrl + prefix + searchService : prefix + searchService;
+
+        serviceUrl += '?'
+        for (let key in data) {
+            if (data[key]) {
+                serviceUrl += key + "=" + encodeURI(data[key]) + "&";
+            }
+        }
+        serviceUrl = serviceUrl.substring(0, serviceUrl.length - 1);
+        console.log(serviceUrl);
+
+        fetch(serviceUrl,
             {
                 method: 'GET',
-                payload: JSON.stringify(data),
-                // headers: { "Content-Type": "application/json" }
             })
             .then(
                 res => {
-                    console.log(data)
                     if (res.status === 200) {
-                        message.success("Page posted successfully")
+                        message.success("Search sent successfully");
+                        return res;
                     } else {
-                        message.error("Page posted failed");
+                        message.error("Search sent failed");
+                        throw Error(res.statusText);
                     }
                 }
             )
-        // TODO: redirect
+            .then(res => res.json())
+            .then(res => {
+                setResponse(res);
+                setSearchStatus(true);
+            })
+            .catch(
+                err => {
+                    message.warning("Please try again", err);
+                }
+            )
     };
 
-    return (
+    return searchSuccess ? (
+        <Redirect
+            to={{
+                pathname: "/results",
+                state: {
+                    data: response,
+                    type: props.type === "F" ? "S" : "F"
+                }
+            }}
+        />
+    ) : (
         <div className="search-form">
             <h2>
                 Search for existing requests
             </h2>
             <div className="search-bar">
-                <Input suffix={<img src={search} alt=""/>} onChange={onChange1}/>
+                <Input suffix={<img src={search} alt=""/>} onChange={onChange1} id="search-input"/>
             </div>
             <Form
                 name="search"

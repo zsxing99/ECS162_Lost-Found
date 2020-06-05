@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import '../styles/App.css';
 import Main from "./Main";
 import { Button } from "antd";
+import { IconFont } from "./Icons";
 
-import cover from "../assets/Shields-entrance_Credit-Hector-Villicana_1924x1282-960x600-c-center.jpg";
-import google from "../assets/google.jpg";
-import logo from "../assets/Logo.png";
+import cover from "../assets/images/Shields-entrance_Credit-Hector-Villicana_1924x1282-960x600-c-center.jpg";
+import logo from "../assets/images/Logo.png";
 import {
     BrowserRouter as Router,
     Switch,
@@ -16,6 +16,7 @@ import {
 
 function App() {
     const [loggedIn, setLogin] = useState(false);
+
     const history = useHistory();
     const onClick = () => {
         // history.push("/auth/google")
@@ -34,8 +35,7 @@ function App() {
                         <img id="welcome-img" src={cover} alt=""/>
                         <div className="login-page">
                             <img id="logo-img" src={logo} alt=""/>
-                            <Button shape="round" onClick={onClick}>
-                                <img id="login-img" src={google} alt=""/>
+                            <Button id="login-btn" shape="round" onClick={onClick} icon={<IconFont id="login-img" type="icon-google"/>}>
                                 Login with Google
                             </Button>
                         </div>
@@ -45,6 +45,7 @@ function App() {
                 <Route exact path="/finder/search" component={Main}/>
                 <Route exact path="/seeker/post" component={Main}/>
                 <Route exact path="/seeker/search" component={Main}/>
+                <Route exact path="/results" component={Main} />
                 <Route exact path="/home" component={Main} />
             </Switch>
         </Router>

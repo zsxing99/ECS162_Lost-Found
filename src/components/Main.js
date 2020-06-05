@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "antd";
-import logo from "../assets/Logo.png";
+import logo from "../assets/images/Logo.png";
 import "../styles/Main.css";
 
 import {
@@ -12,6 +12,7 @@ import {
 import FinderForum from "./FinderForum";
 import SeekerForum from "./SeekerForum";
 import SearchForum from "./SearchForum";
+import ResultForum from "./ResultForum";
 
 function Main() {
 
@@ -29,6 +30,7 @@ function Main() {
                     <SearchForum type="S" />
                 </Route>
                 <Route exact path="/home" component={Prompt} />
+                <Route exact path="/results" component={ResultForum} />
             </Switch>
         </Router>
     )

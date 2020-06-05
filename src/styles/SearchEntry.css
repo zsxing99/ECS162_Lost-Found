@@ -16,8 +16,9 @@ h2 {
 .search-block img {
     display: block;
     float: right;
-    max-width: 4vh;
+    max-width: 4vw;
     max-height:100%;
     width: auto;
     height: auto;
+    transform: scaleX(-1)
 }

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useHistory } from "react-router-dom";
-import search_icon from "../assets/search-solid.svg";
+import search_icon from "../assets/images/search-solid.svg";
 
 import "../styles/SearchEntry.css";
 

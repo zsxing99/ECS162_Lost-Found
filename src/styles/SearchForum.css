@@ -11,6 +11,7 @@
     color: #142a50 !important;
 
     justify-content: space-around;
+    max-height: 90vh;
 }
 
 .search-bar {
@@ -19,12 +20,13 @@
     margin-bottom: 10px;
 }
 
-.ant-input {
-    background: #fff;
-}
-
 .search-bar img {
     height: 3vh;
+    transform: scaleX(-1)
+}
+
+#search-input {
+    background: white;
 }
 
 #search {
