@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useProxy, proxyUrl, prefix, searchService } from "../config";
+import dateParser from "../utils/Parser";
 import "../styles/SearchForum.css";
 import search from "../assets/images/search-solid.svg";
 import { Redirect } from "react-router-dom";
@@ -26,6 +27,7 @@ export default function SearchForum(props) {
     const [ selectedPlace, setSelectedPlace ] = useState();
     const [ searchSuccess, setSearchStatus ] = useState(false);
     const [ response, setResponse] = useState({});
+    const [ query, setQuery] = useState('');
 
     // input text area
     // 1 - search bar; 2 - time start; 3 - time end
@@ -119,6 +121,7 @@ export default function SearchForum(props) {
         }
 
         let serviceUrl = useProxy ? proxyUrl + prefix + searchService : prefix + searchService;
+        let queryText = '';
 
         serviceUrl += '?'
         for (let key in data) {
@@ -127,7 +130,48 @@ export default function SearchForum(props) {
             }
         }
         serviceUrl = serviceUrl.substring(0, serviceUrl.length - 1);
-        console.log(serviceUrl);
+
+        // concatenate query text
+        // Date
+        if (values.time && values.time.t1) {
+            queryText += dateParser(values.time.t1);
+        }
+
+        if (values.time && values.time.t2) {
+            if (queryText.length === 0) {
+                queryText += "Before ";
+            } else {
+                queryText += ' - ';
+            }
+            queryText += dateParser(values.time.t2);
+        } else {
+            if (queryText.length !== 0) {
+                queryText = "After " + queryText;
+            }
+        }
+
+        if (queryText.length !== 0) {
+            queryText += ', ';
+        }
+
+        // Category
+        if (values.category) {
+            queryText += values.category + ', ';
+        }
+
+        // Location
+        if (values.location) {
+            queryText += values.location;
+        }
+
+        if (queryText[queryText.length - 2] === ',' && queryText[queryText.length - 1] === ' ') {
+            queryText = queryText.slice(0, queryText.length - 2);
+        }
+
+        // Title
+        if (queryText === '') {
+            queryText += "description: " + input1;
+        }
 
         fetch(serviceUrl,
             {
@@ -146,8 +190,14 @@ export default function SearchForum(props) {
             )
             .then(res => res.json())
             .then(res => {
+                setQuery(queryText);
                 setResponse(res);
                 setSearchStatus(true);
+                if (res.length !== 0) {
+                    message.success(`There are ${res.length} results matching your search`);
+                } else {
+                    message.warning("No result matches your search");
+                }
             })
             .catch(
                 err => {
@@ -158,11 +208,13 @@ export default function SearchForum(props) {
 
     return searchSuccess ? (
         <Redirect
+            push
             to={{
                 pathname: "/results",
                 state: {
                     data: response,
-                    type: props.type === "F" ? "S" : "F"
+                    type: props.type === "F" ? "S" : "F",
+                    query: query
                 }
             }}
         />

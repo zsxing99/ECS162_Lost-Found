@@ -7,6 +7,11 @@ h2 {
     height: 5vh;
     width: 80vw;
     padding: 5px;
+
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .search-block:hover {
@@ -14,8 +19,7 @@ h2 {
 }
 
 .search-block img {
-    display: block;
-    float: right;
+    margin-left: auto;
     max-width: 4vw;
     max-height:100%;
     width: auto;

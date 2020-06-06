@@ -1,0 +1,105 @@
+.results-form {
+    width: 80vw;
+    position: relative;
+    left: 10vw;
+    margin-bottom: 30px;
+}
+
+.results-form h2 {
+    margin-bottom: 0;
+}
+
+#search-query {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    color: #142a50;
+    font-size: 17px;
+}
+
+#edit-search-btn {
+    float: right;
+    height: 28px;
+    font-size: small;
+    font-weight: 600;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.details {
+    font-weight: 500;
+    display: flex;
+    color: #142a50;
+}
+
+.details img {
+    width: 100px;
+    height: auto;
+    margin: 10px 5vw 10px 10px;
+}
+
+.meta {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.meta-label {
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+.meta-label p {
+    color: black;
+    margin: 0;
+}
+
+.meta-info p {
+    color: black;
+    margin: 0;
+}
+
+.shrink-btn {
+    float: right;
+    font-size: 15px;
+    font-weight: bold;
+    color: #142a50;
+    margin-bottom: 15px;
+}
+
+.expand-btn {
+    font-size: 15px;
+    color: #142a50;
+    font-weight: bold;
+}
+
+.shrink-btn:hover {
+    cursor: pointer;
+}
+
+.ant-collapse {
+    background: white;
+}
+
+.ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header {
+    color: #142a50;
+    font-weight: 500;
+}
+
+[data-theme='compact'] .site-collapse-custom-collapse-S .site-collapse-custom-panel-S,
+.site-collapse-custom-collapse-S .site-collapse-custom-panel-S {
+    background: #b3c1d1;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    border: 0;
+    color: #142a50;
+}
+
+[data-theme='compact'] .site-collapse-custom-collapse-F .site-collapse-custom-panel-F,
+.site-collapse-custom-collapse-F .site-collapse-custom-panel-F {
+    background: #feebb1;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    border: 0;
+    color: #142a50;
+}
