@@ -13,13 +13,17 @@ import {
     Redirect,
     useHistory
 } from "react-router-dom";
+import { loginService, prefix, proxyUrl, useProxy } from "../config";
 
 function App() {
     const [loggedIn, setLogin] = useState(false);
 
-    const history = useHistory();
     const onClick = () => {
-        // history.push("/auth/google")
+        fetch(useProxy ? proxyUrl + prefix + loginService : prefix + loginService).then(
+            res => {
+                console.log(res);
+            }
+        )
 
         // for test purpose set loggedIn true
         setLogin(true)

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Collapse, Button, message} from 'antd';
+import {Collapse, Button} from 'antd';
 import "../styles/ResultForum.css";
 import { useHistory } from "react-router-dom";
 import dateParser from "../utils/Parser";

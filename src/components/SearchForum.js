@@ -161,7 +161,7 @@ export default function SearchForum(props) {
 
         // Location
         if (values.location) {
-            queryText += values.location;
+            queryText += values.location.split(",")[0];
         }
 
         if (queryText[queryText.length - 2] === ',' && queryText[queryText.length - 1] === ' ') {
