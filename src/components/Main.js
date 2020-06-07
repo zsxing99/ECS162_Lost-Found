@@ -7,17 +7,18 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    useHistory
+    useHistory,
+    Redirect
 } from "react-router-dom";
 import FinderForum from "./FinderForum";
 import SeekerForum from "./SeekerForum";
 import SearchForum from "./SearchForum";
 import ResultForum from "./ResultForum";
 
-function Main() {
+function Main(props) {
 
 
-    return (
+    return !props.loggedIn ? <Redirect to="/"/> : (
         <Router>
             <Header />
             <Switch>

@@ -10,4 +10,4 @@ export const prefix = DEV_ENVIRONMENT ? "https://lost-found-162.glitch.me" : '';
 export const uploadService = "/upload";
 export const searchService = "/search";
 export const postService = "/post";
-export const loginService = "/auth/google";
+export const loginService = "/setcookie";
