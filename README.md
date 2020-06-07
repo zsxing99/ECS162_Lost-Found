@@ -1,68 +1,60 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Davis Lost and Found
 
-## Available Scripts
+We know it's very frustrating when people lost their stuff or find other people's stuff
+but don't know where to return. This project is to provide a platform for those who lose
+their belongings to post help and who find people's belongings to seek owners.
 
-In the project directory, you can run:
+## Tools and Development
 
-### `npm start`
+We use React as the front, express as the backend, and [glitch](https://lost-found-162.glitch.me/home) to host our application.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+We take advantage of React that it is one-page application, and a good management of data flow.
+We choose Express as our backend to host RESTful APIs to handle requests and MySQL as the database
+to deal with website data.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### Front end
+```
+pages
+├── welcome
+└── main
+    ├── prompt
+    ├── finder/post
+    ├── seeker/post
+    ├── finder/search
+    ├── seeker/search
+    └── search/results
+```
+We use browse router to navigate pages.
+#### Tech Specs
+##### Google Map
+In our post and search page, we enable google map to support users two ways of finding a location.
+They can either click on the map, so our program will find the nearest place based on the click. Or,
+the user can enter their desired place, and our program will autocomplete the text they enter and
+will provide a list of matching places for the user to choose from.
 
-### `npm test`
+##### Google Place and Proxy
+These functionalities are accomplished by Google Place API. To use them and integrate with Google Map
+and React, we have to use a proxy to avoid CORS issues. Our proxy is hosted at 
+[this page](https://162-proxy.glitch.me/). Only Google Place API is used with proxy to avoid CORS. Other
+third party request such as Google Login/Google Map are used normally.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##### Google OAuth
+For Google Login and Google Map, we enable front end service directly. Since our platform doesn't require
+to store a user database. We use Google Auth Login in front end to communicate with Google OAuth and get 
+cookies from there without sending request to backend and backend sends request to Google OAuth.
 
-### `npm run build`
+##### Page Block
+In that way, we cannot get a session cookie from our backend, so to compensate the lack of our cookies,
+we add a login status in front end to ensure that the user must have logged in to visit pages other than
+welcome, and to send requests.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Design Specs
+Design Specs follow the instructions. In addition, we enable our message system to send necessary
+messages to direct user what's going and what they should do instead of sending alerts that block
+the entire screen. 
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Backend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### RESTful API
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+#### Database

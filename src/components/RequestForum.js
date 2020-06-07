@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/RequestForum.css";
-import { useProxy, proxyUrl, photoStorageLink, prefix, uploadService, postService } from "../config"
+import { useProxy, proxyUrl, photoStorageLink, prefix, uploadService, postService, mapProxyUrl } from "../config"
 import { Button, Form, Input, Select, Upload, message, AutoComplete } from "antd";
 import GoogleMap from "./GoogleMap";
 
@@ -44,7 +44,7 @@ class RequestForum extends React.Component {
             description: this.state.description,
             photoURL: this.state.photo ? photoStorageLink + this.state.photo : '',
             time: values.time,
-            location: this.state.location,
+            location: values.location,
             ...this.state.selectedPlace,
         }
 
@@ -129,7 +129,7 @@ class RequestForum extends React.Component {
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&input=" + encodeURI(text) + "&location=" +
                 "38.537,-121.754&radius=10000&strictbounds=true";
 
-            fetch(useProxy ? proxyUrl + url : url)
+            fetch(mapProxyUrl + url)
                 .then(res => res.json())
                 .then((data) => {
                     this.setState({
@@ -144,7 +144,7 @@ class RequestForum extends React.Component {
         const onSelect = (data, object) => {
             const url = "https://maps.googleapis.com/maps/api/place/details/json?" +
                 "key=AIzaSyCTbLgQzno0rc_eE40MoFuo6FLdiV6MOhA&place_id=" + encodeURI(object.key) + "&fields=geometry";
-            fetch(useProxy ? proxyUrl + url : url)
+            fetch(mapProxyUrl + url)
                 .then(res => res.json())
                 .then((data) => {
                     this.setState({
@@ -159,7 +159,7 @@ class RequestForum extends React.Component {
             const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                 "key=AIzaSyADX7Pl6ly45fro2Z5nNhy10YUHqKr1AY8&location=" + place.lat + ',' + place.lng + "&radius=50"
 
-            fetch(useProxy ? proxyUrl + url : url)
+            fetch(mapProxyUrl + url)
                 .then(res => res.json())
                 .then((data) => {
                     if (!data.results || data.results.length === 0 || !data.results[0].name || !data.results[0].geometry) {
